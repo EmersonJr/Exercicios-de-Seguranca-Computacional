@@ -37,7 +37,7 @@ signed main(){
                 val = x - 'A';
 
                 val = (val - i + 26) % 26;
-
+                cnt[val]++;
                 possM.push_back((char)(val + 'A'));
                 continue;
             }
