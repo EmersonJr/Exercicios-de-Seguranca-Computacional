@@ -11,7 +11,9 @@ int binStrToInt(string binStr) {
 
     int aux = 0, pot2 = 1;
 
-    for(auto x : binStr){
+    for(int i = binStr.size()-1; i > -1; i--){
+
+        char x = binStr[i];
 
         if(x == '1') aux += pot2;
 
@@ -50,6 +52,22 @@ string intToBinStr2(int num) {
 
     reverse(binStr.begin(), binStr.end());
 
+    return binStr;
+}
+
+string intToBinStr4(int num) {
+
+    string binStr = "";
+
+    while(binStr.size() != 4){
+
+        binStr.push_back((char)((num % 2) + '0'));
+
+        num /= 2;
+    }
+
+    reverse(binStr.begin(), binStr.end());
+    
     return binStr;
 }
 string permutRoundKey(string genKey) {
@@ -195,6 +213,7 @@ int roundFunc(string roundKey, string r) {
 
     r = expand(r);
 
+
     vector<vector<int>> s0 = {
         {1, 0, 3, 2},
         {3, 2, 1, 0},
@@ -221,7 +240,8 @@ int roundFunc(string roundKey, string r) {
     string resultPart1 = "";
 
     resultPart1 += intToBinStr2(s0[idxs[0][0]*2 + idxs[0][3]][idxs[0][1]*2 + idxs[0][2]]);
-    resultPart1 += intToBinStr2(s0[idxs[1][0]*2 + idxs[1][3]][idxs[1][1]*2 + idxs[1][2]]);
+    resultPart1 += intToBinStr2(s1[idxs[1][0]*2 + idxs[1][3]][idxs[1][1]*2 + idxs[1][2]]);
+
 
     string result = "";
     result.push_back(resultPart1[1]);
@@ -318,9 +338,9 @@ string desAlgo(string plainTxt) {
 
         int li = binStrToInt(l);
 
-        string l = intToBinStr8(li ^ resFunc);
+        l = intToBinStr4(li ^ resFunc);
 
-        swap(l, r);
+        if(!i) swap(l, r);
     }
 
     return l+r;
