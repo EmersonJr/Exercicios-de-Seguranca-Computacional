@@ -5,7 +5,8 @@
 
 using namespace std;
 
-string key = "1010000010", plainTxt = "11010111";
+string key = "1010000010", plainTxt = "11010111", cypherTxt;
+vector<string> roundKeys;
 
 int binStrToInt(string binStr) {
 
@@ -125,7 +126,7 @@ void shiftKey(string &k) {
 
     k[9] = actLetter;
 }
-vector<string> genRoundKey(string k = key) {
+vector<string> genRoundKey(bool decrypt = false, string k = key) {
 
     string permKey = "";
 
@@ -172,6 +173,8 @@ vector<string> genRoundKey(string k = key) {
     shiftKey(permKey);
     shiftKey(permKey);
     roundsKeys[1] = permutRoundKey(permKey);
+
+    if(decrypt) reverse(roundsKeys.begin(), roundsKeys.end());
 
     return roundsKeys;
 }
@@ -330,8 +333,6 @@ string desAlgo(string plainTxt) {
     for(int i = 0; i < 4; i++) l.push_back(plainTxt[i]);
     for(int i = 4; i < 8; i++) r.push_back(plainTxt[i]);
 
-    vector<string> roundKeys = genRoundKey();
-
     for(int i = 0; i < 2; i++) {
 
         int resFunc = roundFunc(roundKeys[i], r);
@@ -346,7 +347,71 @@ string desAlgo(string plainTxt) {
     return l+r;
 }
 
+void genAllKeys() {
+
+    for(int i = 0; i < (1 << 10); i++){
+        for(int j = 0; j < 10; j++){
+
+            key[j] = ((i & (1 << j)) ? 1 : 0) + '0';
+        }
+        roundKeys = genRoundKey(true);
+        cout << "Chave: " << key << " " << "Texto em Claro: " << finalPerm(desAlgo(iniPerm(cypherTxt))) << '\n';
+    }
+}
+
+void decrypt(){
+
+    cout << "Insira o texto cifrado: ";
+    cin >> cypherTxt;
+    string respAns;
+
+    do{
+
+        cout << "Voce tem acesso a chave? [Y/N] ";
+        cin >> respAns;
+    }while(respAns != "Y" && respAns != "N");
+
+    if(respAns == "N") {
+
+        genAllKeys();
+        return;
+    }
+
+    cout << "Insira a chave: ";
+
+    cin >> key;
+
+    roundKeys = genRoundKey(true);
+
+    cout << "Texto em claro: " << finalPerm(desAlgo(iniPerm(cypherTxt))) << '\n';
+}
+
+void encrypt() {
+
+    cout << "Insira a chave: ";
+
+    cin >> key;
+
+    cout << "Insira o texto em claro: ";
+
+    cin >> plainTxt;
+
+    roundKeys = genRoundKey();
+
+    cout << "Texto cifrado: " << finalPerm(desAlgo(iniPerm(plainTxt))) << '\n';
+}
 signed main() {
 
-    cout << finalPerm(desAlgo(iniPerm(plainTxt))) << '\n';
+    string personInput;
+
+    do{
+        cout << "Voce quer decriptar ou encriptar? [D/E] ";
+
+        cin >> personInput;
+
+        if (personInput == "D") decrypt();
+        else if (personInput == "E") encrypt();
+    }while(personInput != "QUIT");
+
+    
 }
