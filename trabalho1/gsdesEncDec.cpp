@@ -507,7 +507,7 @@ signed main() {
     string personInput;
 
     do{
-        cout << "Voce quer decriptar ou encriptar? [D/E] ";
+        cout << "Voce quer decriptar ou encriptar? [D/E] (QUIT para sair)";
 
         cin >> personInput;
 
