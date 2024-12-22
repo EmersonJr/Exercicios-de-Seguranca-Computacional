@@ -116,6 +116,8 @@ void shiftKey(string &k) {
         swap(k[i], actLetter);
     }
 
+    // shiftando os 5 bits mais significativos
+
     k[4] = actLetter;
 
     actLetter = k[9];
@@ -125,6 +127,7 @@ void shiftKey(string &k) {
         swap(k[i], actLetter);
     }
 
+    // shiftando os 5 bits menos significativos
     k[9] = actLetter;
 }
 vector<string> genRoundKey(bool decrypt = false, string k = key) {
@@ -175,12 +178,12 @@ vector<string> genRoundKey(bool decrypt = false, string k = key) {
 
     cout << "Chave permutada: " << permKey << '\n';
     shiftKey(permKey);
-    cout << "Chave pós shift: " << permKey << '\n';
+    cout << "Chave pos shift: " << permKey << '\n';
     roundsKeys[0] = permutRoundKey(permKey);
     cout << "Subchave 1: " << roundsKeys[0] << '\n';
     shiftKey(permKey);
     shiftKey(permKey);
-    cout << "Chave pós 2 shift's: " << permKey << '\n';
+    cout << "Chave pos 2 shift's: " << permKey << '\n';
     roundsKeys[1] = permutRoundKey(permKey);
     cout << "Subchave 2: " << roundsKeys[1] << '\n';
 
@@ -410,6 +413,8 @@ void genAllKeys() {
 
             key[j] = ((i & (1 << j)) ? 1 : 0) + '0';
         }
+
+        // Não aconselhavel fica muito grande e dificil de entender as saidas
         roundKeys = genRoundKey(true);
         cout << "Chave: " << key << " " << "Texto em Claro: " << finalPerm(desAlgo(iniPerm(cypherTxt))) << '\n';
     }
@@ -420,8 +425,9 @@ void decrypt(){
     string padrao;
     do{
 
-        cout << "Deseja utilizar os valores padrões do projeto? [Y/N] ";
+        cout << "Deseja utilizar os valores padroes do projeto? [Y/N] ";
         cin >> padrao;
+        // Responda "Y" para visualizar com os valores do projeto.
 
         if(padrao == "Y"){
 
@@ -431,6 +437,9 @@ void decrypt(){
 
                 cout << "Gerar todas as chaves? [Y/N] ";
                 cin >> respAns;
+
+                // Responda "N" para ter uma melhor visualização da decriptação
+
             }while(respAns != "Y" && respAns != "N");
 
             if(respAns == "Y") {
@@ -478,8 +487,11 @@ void encrypt() {
 
     do{
 
-        cout << "Deseja utilizar os valores padrões do projeto? [Y/N] ";
+        cout << "Deseja utilizar os valores padroes do projeto? [Y/N] ";
         cin >> padrao;
+
+        // Responda "Y" para visualizar os resultados para a chave e texto em claro
+        // definidos pela especificação do projeto
 
         if(padrao == "Y"){
 
@@ -507,13 +519,11 @@ signed main() {
     string personInput;
 
     do{
-        cout << "Voce quer decriptar ou encriptar? [D/E] (QUIT para sair)";
+        cout << "Voce quer decriptar ou encriptar? [D/E] (QUIT para sair) ";
 
         cin >> personInput;
 
         if (personInput == "D") decrypt();
         else if (personInput == "E") encrypt();
-    }while(personInput != "QUIT");
-
-    
+    }while(personInput != "QUIT");  
 }
