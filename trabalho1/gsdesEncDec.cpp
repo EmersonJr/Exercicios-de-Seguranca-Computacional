@@ -8,6 +8,11 @@ using namespace std;
 string key = "1010000010", plainTxt = "11010111", cypherTxt = "10101000";
 vector<string> roundKeys;
 
+// Implementação de uma versão didatica do DES, uma versão simplificada
+// diferentemente do DES convencional a cifra de feistel apresenta menos
+// rodadas, além disso, o bloco é menor e a chave também, tudo isso com
+// o objetivo do algoritmo ficar didatico
+
 int binStrToInt(string binStr) {
 
     int aux = 0, pot2 = 1;
@@ -132,6 +137,9 @@ void shiftKey(string &k) {
 }
 vector<string> genRoundKey(bool decrypt = false, string k = key) {
 
+    // função que gera a partir de uma chave K subchaves para as rodadas
+    // da cifra de Feistel, por meio de permutações e shifts de bits a esquerda
+
     cout << "Gerando chave -> \n";
 
     string permKey = "";
@@ -203,6 +211,9 @@ vector<string> genRoundKey(bool decrypt = false, string k = key) {
 }
 string expand(string bt) {
 
+    // essa expansão se utiliza de uma permutação então apresenta o mesmo formato e implementação
+    // das demais expansões realizadas nessa implementação
+    
     string btExpanded = "";
     for(int idx = 1; idx <= 8; idx++) {
 
@@ -241,6 +252,7 @@ int roundFunc(string roundKey, string r) {
     r = expand(r);
     cout << "r expandido: " << r << '\n';
 
+    // S-Box: s0
     vector<vector<int>> s0 = {
         {1, 0, 3, 2},
         {3, 2, 1, 0},
@@ -248,6 +260,7 @@ int roundFunc(string roundKey, string r) {
         {3, 1, 3, 2}
     };
 
+    // S-Box: s1
     vector<vector<int>> s1 = {
         {0, 1, 2, 3},
         {2, 0, 1, 3},
@@ -262,6 +275,8 @@ int roundFunc(string roundKey, string r) {
         int aux = (r[i] - '0') ^ (roundKey[i] - '0');
 
         idxs[i / 4][i % 4] = aux;
+        // montagem da matriz 2X4 como definido pelas especificações do projeto e melhor explicado no readme
+        // gera os valores que irão selecionar os elementos das s-boxes S0 e S1
     }
 
     cout << "Matrix XOR subchave e r expandido: " << '\n';
@@ -285,6 +300,10 @@ int roundFunc(string roundKey, string r) {
     cout << "S1: " << resultPart1[2] << resultPart1[3] << '\n';
 
     string result = "";
+
+    // gerando a partir da permutação da concatenação dos valores selecionados nas S-boxes
+    // o resultado da função do Round F
+
     result.push_back(resultPart1[1]);
     result.push_back(resultPart1[3]);
     result.push_back(resultPart1[2]);
@@ -385,11 +404,15 @@ string desAlgo(string plainTxt) {
 
     for(int i = 0; i < 2; i++) {
 
+        // Dois Rounds da cifra de Feistel
+
         cout << "Round " << i+1 << " ->\n";
         cout << "l: " << l << " r: " << r << '\n';
         cout << "--------------\n";
 
         int resFunc = roundFunc(roundKeys[i], r);
+
+        // Função F do Round
 
         int li = binStrToInt(l);
 
